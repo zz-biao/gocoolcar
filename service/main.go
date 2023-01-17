@@ -29,15 +29,20 @@ func startGRPCGateway() {
 	c := context.Background()
 	c, cancel := context.WithCancel(c)
 	defer cancel()
-	mux := runtime.NewServeMux()
+	jsonpb := &runtime.JSONPb{}
+	// 设置枚举使用枚举值而不是字符串
+	jsonpb.UseEnumNumbers = true
+	// 使用原始名称(使用下划线连接不转驼峰)
+	jsonpb.UseProtoNames = true
+	mux := runtime.NewServeMux(runtime.WithMarshalerOption(runtime.MIMEWildcard, jsonpb)) //返回结果 转化
 
 	err := trippb.RegisterTripServiceHandlerFromEndpoint(c, mux, "localhost:8081", []grpc.DialOption{grpc.WithInsecure()})
 	if err != nil {
-		log.Fatalf("connot start grpc")
+		log.Fatalf("connot start grpc: %v", err)
 	}
 
 	err = http.ListenAndServe(":8080", mux)
 	if err != nil {
-		log.Fatalf("connot start grpc")
+		log.Fatalf("connot start grpc: %v", err)
 	}
 }
