@@ -1,0 +1,23 @@
+syntax = "proto3";
+package auth.v1;
+option go_package="coolcar/auth/api/gen/v1;authpb";
+
+//install 在proto文件夹下
+// protoc -I .  --go_out ./gen/v1/ --go_opt paths=source_relative  --go-grpc_out ./gen/v1/  --go-grpc_opt=require_unimplemented_servers=false,paths=source_relative  ./auth.proto
+
+// protoc --go_out=./gen/go/ --go_opt=paths=source_relative  --go-grpc_out=./gen/go/  --go-grpc_opt=paths=source_relative  ./trip.proto
+
+// protoc -I . --grpc-gateway_out=paths=source_relative,grpc_api_configuration=auth.yaml:gen/v1 ./auth.proto
+
+message LoginRequest{
+  string code = 1;
+}
+
+message LoginResponse{
+  string access_token = 1;
+  int32 expires_in = 2;
+}
+
+service AuthService{
+  rpc Login(LoginRequest) returns (LoginResponse);
+}
