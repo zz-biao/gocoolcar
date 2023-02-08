@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
@@ -24,7 +25,7 @@ func main() {
 			"27017/tcp": []nat.PortBinding{
 				{
 					HostIP:   "127.0.0.1",
-					HostPort: "27018",
+					HostPort: "27018", // 0 就是随机端口
 				},
 			},
 		},
@@ -37,6 +38,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	inspect, err := c.ContainerInspect(ctx, resp.ID)
+	if err != nil {
+		panic(err)
+	}
+
+	binding := inspect.NetworkSettings.Ports["27017/tcp"][0]
+
+	fmt.Println(binding)
+
 	err = c.ContainerRemove(ctx, resp.ID, types.ContainerRemoveOptions{
 		Force: true,
 	})
