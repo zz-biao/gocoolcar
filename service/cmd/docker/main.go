@@ -16,7 +16,7 @@ func main() {
 	}
 	ctx := context.Background()
 	resp, err := c.ContainerCreate(ctx, &container.Config{
-		Image: "mongo:4.4",
+		Image: "mongo:4.1",
 		ExposedPorts: nat.PortSet{
 			"27017/tcp": {},
 		},
