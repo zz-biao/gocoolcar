@@ -3,6 +3,7 @@ package dao
 import (
 	"context"
 	mongotesting "coolcar/shared/testing"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
@@ -19,11 +20,16 @@ func TestResolveAccountID(t *testing.T) {
 		t.Fatalf("cannot connnect mongodb: %v", err)
 	}
 	m := NewMongo(mc.Database("coolcar"))
+	m.newObjID = func() primitive.ObjectID {
+		objID, _ := primitive.ObjectIDFromHex("s5sa6d23gs3")
+		return objID
+	}
+
 	id, err := m.ResolveAccountID(c, "123")
 	if err != nil {
 		t.Errorf("faild resolve acount id for 123: %v", err)
 	} else {
-		want := "123444" //todo
+		want := "s5sa6d23gs3" //todo
 		if id != want {
 			t.Errorf("resolve acount id: want: %q, got: %q", want, id)
 		}
