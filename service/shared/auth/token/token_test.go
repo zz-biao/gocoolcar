@@ -17,16 +17,45 @@ func TestVerifier(t *testing.T) {
 		PublicKey: pubKey,
 	}
 
-	tkn := "ssss"
-
-	//固定jwt时间
-	jwt.TimeFunc = func() time.Time {
-		return time.Unix(1516239022, 0)
+	//表格验证
+	cases := []struct {
+		name    string
+		tkn     string
+		now     time.Time
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "valid_token",
+			tkn:  "1111",
+			now:  time.Unix(1516239022, 0),
+			want: "11111",
+		},
+		{
+			name:    "valid_token1",
+			tkn:     "1111",
+			now:     time.Unix(1517239022, 0),
+			wantErr: true,
+		},
 	}
 
-	accountID, err := v.Verifier(tkn)
-	want := "11111"
-	if err != nil {
-		t.Errorf("wrong account id. want: %q, got: %q", want, accountID)
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			jwt.TimeFunc = func() time.Time {
+				return c.now
+			}
+			accountID, err := v.Verifier(c.tkn)
+
+			if !c.wantErr && err != nil {
+				t.Errorf("verification faild: %v", err)
+			}
+			if c.wantErr && err == nil {
+				t.Errorf("want error got no error")
+			}
+			if accountID != c.want {
+				t.Errorf("want account id want: %q ,got :%q", c.want, accountID)
+			}
+		})
 	}
+
 }
