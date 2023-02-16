@@ -9,6 +9,9 @@ import (
 type paramKey struct {
 }
 
+// 同一任务的子步骤
+// 子任务
+// 后台任务 重新做一个 context.Background()
 func main() {
 	c := context.WithValue(context.Background(), paramKey{}, "abc")
 	c, cancel := context.WithTimeout(c, 5*time.Second)
