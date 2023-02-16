@@ -14,13 +14,17 @@ func main() {
 	c, cancel := context.WithTimeout(c, 5*time.Second)
 	defer cancel()
 	mainTask(c)
+	//time.Sleep(time.Hour)//
 }
 
 func mainTask(c context.Context) {
 	fmt.Printf("main task started with param %q\n", c.Value(paramKey{}))
-	//c1, cancel := context.WithTimeout(c, 2*time.Second)
-	//defer cancel()
-	smallTask(context.Background(), "task1", 4*time.Second) //后台任务
+
+	go func() { //启动后台任务的正确方式
+		c1, cancel := context.WithTimeout(c, 2*time.Second)
+		defer cancel()
+		smallTask(c1, "task1", 4*time.Second) //后台任务
+	}()
 	smallTask(c, "task2", 2*time.Second)
 
 }
