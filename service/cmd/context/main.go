@@ -18,7 +18,9 @@ func main() {
 
 func mainTask(c context.Context) {
 	fmt.Printf("main task started with param %q\n", c.Value(paramKey{}))
-	smallTask(c, "task1", 4*time.Second)
+	//c1, cancel := context.WithTimeout(c, 2*time.Second)
+	//defer cancel()
+	smallTask(context.Background(), "task1", 4*time.Second) //后台任务
 	smallTask(c, "task2", 2*time.Second)
 
 }
