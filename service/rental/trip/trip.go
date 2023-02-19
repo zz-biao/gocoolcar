@@ -13,6 +13,7 @@ type Service struct {
 }
 
 func (s *Service) CreateTrip(c context.Context, req *rentalpb.CreateTripRequest) (rep *rentalpb.CreateTripResponse, err error) {
+	// get accountID from context
 	s.Logger.Info("create trip", zap.String("start", req.Start))
 	return nil, status.Error(codes.Unimplemented, "")
 }
