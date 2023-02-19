@@ -3,11 +3,10 @@ package main
 import (
 	rentalpb "coolcar/rental/api/gen/v1"
 	"coolcar/rental/trip"
-	"coolcar/shared/auth"
+	"coolcar/shared/server"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"log"
-	"net"
 )
 
 func main() {
@@ -15,22 +14,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("cannot create logger: %v", err)
 	}
-	lis, err := net.Listen("tcp", ":8082")
-	if err != nil {
-		logger.Fatal("cannot listen", zap.Error(err))
-	}
 
-	in, err := auth.Interceptor("shared/auth/public.key")
-	if err != nil {
-		logger.Fatal("cannot create auth interceptor", zap.Error(err))
-	}
-
-	s := grpc.NewServer(grpc.UnaryInterceptor(in))
-	rentalpb.RegisterTripServiceServer(s, &trip.Service{ //设置配置
+	logger.Sugar().Fatal(server.RunGRPCServer(&server.GRPCConfig{
+		Name:              "rental",
+		Addr:              ":8082",
+		AuthPublicKeyFile: "shared/auth/public.key",
+		RegisterFunc: func(s *grpc.Server) {
+			rentalpb.RegisterTripServiceServer(s, &trip.Service{ //设置配置
+				Logger: logger,
+			})
+		},
 		Logger: logger,
-	})
-	err = s.Serve(lis)
-	if err != nil {
-		logger.Fatal("cannot server", zap.Error(err))
-	}
+	}))
 }
