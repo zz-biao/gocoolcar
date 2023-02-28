@@ -1,14 +1,21 @@
-package mgo
+package mgutil
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-const IDField = "_id"
+const (
+	IDFieldName        = "_id"
+	UpdatedAtFieldName = "updatedat"
+)
 
-type ObjID struct {
+type IDField struct {
 	ID primitive.ObjectID `bson:"_id"`
+}
+
+type UpdatedAtField struct {
+	UpdatedAt int64 `bson:"updatedat"`
 }
 
 // Set return a $set update
