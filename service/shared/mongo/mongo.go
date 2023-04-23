@@ -3,6 +3,7 @@ package mgutil
 import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
 )
 
 const (
@@ -16,6 +17,14 @@ type IDField struct {
 
 type UpdatedAtField struct {
 	UpdatedAt int64 `bson:"updatedat"`
+}
+
+// NewObjId generates a new object id
+var NewObjId = primitive.NewObjectID()
+
+// UpdatedAt generates a new object id
+var UpdatedAt = func() int64 {
+	return time.Now().UnixNano()
 }
 
 // Set return a $set update
