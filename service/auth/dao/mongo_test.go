@@ -30,7 +30,7 @@ func TestResolveAccountID(t *testing.T) {
 		t.Errorf("faild resolve acount id for 123: %v", err)
 	} else {
 		want := "s5sa6d23gs3" //todo
-		if id != want {
+		if id.String() != want {
 			t.Errorf("resolve acount id: want: %q, got: %q", want, id)
 		}
 	}

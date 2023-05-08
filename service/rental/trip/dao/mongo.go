@@ -3,11 +3,11 @@ package dao
 import (
 	"context"
 	rentalpb "coolcar/rental/api/gen/v1"
-	"coolcar/shared/auth"
+	"coolcar/shared/id"
 	mgutil "coolcar/shared/mongo"
+	"coolcar/shared/mongo/objid"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -45,8 +45,8 @@ func (m *Mongo) CreateTrip(c context.Context, trip *rentalpb.Trip) (*TripRecord,
 	return r, err
 }
 
-func (m *Mongo) GetTrip(c context.Context, id string, accountID auth.AccountID) (*TripRecord, error) {
-	objId, err := primitive.ObjectIDFromHex(id)
+func (m *Mongo) GetTrip(c context.Context, id id.TripID, accountID id.AccountID) (*TripRecord, error) {
+	objId, err := objid.FromID(id)
 	if err != nil {
 		return nil, fmt.Errorf("invalid id: %v", err)
 	}
